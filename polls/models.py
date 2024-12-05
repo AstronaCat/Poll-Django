@@ -13,6 +13,10 @@ class Board(models.Model):
         total_votes = sum(choice.votes for question in questions for choice in question.choice_set.all())
         return {"questions": len(questions), "total_votes": total_votes}
 
+    def __str__(self):
+        return self.name
+
+
 class Question(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     text = models.TextField()
@@ -21,6 +25,15 @@ class Question(models.Model):
     MEDIA_TYPES = [('image', 'Image'), ('video', 'Video')]
     media_type = models.CharField(max_length=5, choices=MEDIA_TYPES, null=True, blank=True)
     media_url = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.text} of {self.board}"
+
+    def has_image(self):
+        return self.media_type == 'image'
+
+    def has_video(self):
+        return self.media_type == 'video'
 
     def add_choice(self, text):
         return Choice.objects.create(question=self, text=text)

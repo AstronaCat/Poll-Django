@@ -13,9 +13,9 @@ class BoardAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('board', 'text', 'media')
+    list_display = ('text', 'board')
 
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ('question', 'text', 'votes')
+    list_display = ('text', 'question', 'votes')

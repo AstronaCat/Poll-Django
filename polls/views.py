@@ -16,8 +16,8 @@ def create_board(request):
 def dashboard(request):
     boards = Board.objects.all()
     for board in boards:
-        board.has_image = any(q.media and q.media.is_image() for q in board.question_set.all())
-        board.has_video = any(q.media and q.media.is_video() for q in board.question_set.all())
+        board.has_image = any(q.has_image() for q in board.question_set.all())
+        board.has_video = any(q.has_video() for q in board.question_set.all())
     return render(request, 'polls/dashboard.html', {'boards': boards})
 
 
