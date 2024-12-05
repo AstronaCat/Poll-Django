@@ -15,3 +15,5 @@ FLUSH PRIVILEGES;
 python manage.py runserver
 ```
 
+## Admin 접근 
+`localhost:8000/admin`
