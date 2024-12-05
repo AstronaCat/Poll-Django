@@ -1,17 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Media(models.Model):
-    MEDIA_TYPES = [('image', 'Image'), ('video', 'Video')]
-    type = models.CharField(max_length=5, choices=MEDIA_TYPES)
-    url = models.URLField()
-
-    def is_image(self):
-        return self.type == 'image'
-
-    def is_video(self):
-        return self.type == 'video'
-
 class Board(models.Model):
     name = models.CharField(max_length=100)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -27,7 +16,11 @@ class Board(models.Model):
 class Question(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     text = models.TextField()
-    media = models.OneToOneField(Media, on_delete=models.CASCADE, null=True, blank=True)
+    # media = models.OneToOneField(Media, on_delete=models.CASCADE, null=True, blank=True)
+
+    MEDIA_TYPES = [('image', 'Image'), ('video', 'Video')]
+    media_type = models.CharField(max_length=5, choices=MEDIA_TYPES, null=True, blank=True)
+    media_url = models.URLField(null=True, blank=True)
 
     def add_choice(self, text):
         return Choice.objects.create(question=self, text=text)

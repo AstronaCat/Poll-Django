@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Board, Question, Choice, Media
+from .models import Board, Question, Choice
 from django.contrib.auth.decorators import login_required
 
 

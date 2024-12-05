@@ -1,13 +1,9 @@
 from django.contrib import admin
 
-from polls.models import Media, Board, Question, Choice
+from polls.models import Board, Question, Choice
 
 
 # Register your models here.
-
-@admin.register(Media)
-class MediaAdmin(admin.ModelAdmin):
-    list_display = ('type', 'url')
 
 
 @admin.register(Board)
