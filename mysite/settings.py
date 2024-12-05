@@ -76,8 +76,15 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'polldb',  # MariaDB 데이터베이스 이름
+        'USER': 'polluser',  # MariaDB 사용자 이름
+        'PASSWORD': '11poll22',  # MariaDB 비밀번호
+        'HOST': '175.211.215.64',  # MariaDB 호스트 (기본값: localhost)
+        'PORT': '33306',  # MariaDB 포트 (기본값: 3306)
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES',
+        },
     }
 }
 
