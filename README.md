@@ -9,3 +9,9 @@ CREATE USER 'polluser'@'%' IDENTIFIED BY '11poll22';
 GRANT ALL PRIVILEGES ON polldb.* TO 'polluser'@'%';
 FLUSH PRIVILEGES;
 ```
+
+## Run Program
+```shell
+python manage.py runserver
+```
+
