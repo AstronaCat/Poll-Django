@@ -1,5 +1,11 @@
 # working Branch
 
+## 처음 설치
+```shell
+python -m venv venv 
+
+pip install -r requirements.txt
+```
 
 ## MySQL DB 설정
 
