@@ -38,9 +38,10 @@ class Question(models.Model):
     def add_choice(self, text):
         return Choice.objects.create(question=self, text=text)
 
+    # cast_vote() function 수정 필요
     def cast_vote(self, choice_id):
         choice = self.choice_set.get(id=choice_id)
-        choice.increment_votes()
+        choice
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

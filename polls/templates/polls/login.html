@@ -1,13 +1,13 @@
 {% block content %}
-<h2>Login</h2>
+<h2>로그인 페이지</h2>
 <form method="post">
     {% csrf_token %}
-    <label for="username">Username:</label>
+    <label for="username">아이디(사용자 이름):</label>
     <input type="text" id="username" name="username" required>
     <br>
-    <label for="password">Password:</label>
+    <label for="password">비밀번호:</label>
     <input type="password" id="password" name="password" required>
     <br>
-    <button type="submit">Login</button>
+    <button type="submit">로그인</button>
 </form>
 {% endblock %}

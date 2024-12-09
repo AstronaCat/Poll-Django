@@ -21,8 +21,8 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('polls.urls')),  # Include polls app routes
+    path('admin/', admin.site.urls),  # (admin page) http://localhost:8080/admin/  
+    path('', include('polls.urls')),  # (default/main page) http://localhost:8080/
     path('login/', auth_views.LoginView.as_view(template_name='polls/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
