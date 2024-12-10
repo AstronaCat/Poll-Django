@@ -6,15 +6,19 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def create_board(request):
     if request.method == "POST":
-        #print(request.POST)
+        print(request.POST)
         name = request.POST.get('name')
-        questions = request.POST.get('questions')
-        media_type = request.POST.get('media-type')
-        media_url = request.POST.get('media-url')
+        questions = request.POST.getlist('questions')
+        media_type = request.POST.getlist('media_type')
+        media_url = request.POST.getlist('media_url')
         
         board = Board.objects.create(name=name, created_by=request.user)
+        print(questions)
+        print(media_type)
+        print(media_url)
         for i in range(len(questions)):
-            Question.objects.create(board=board, text=questions[i], media_type=media_type[i], media_url=media_url[i])
+            Question.objects.create(board=board, text=questions[i], 
+                                    media_type=media_type[i], media_url=media_url[i])
         return redirect('dashboard')
     return render(request, 'polls/create_board.html')
 
