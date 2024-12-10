@@ -1,22 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% if user.is_authenticated %}
-<div style="display:inline-block;">
-    <p style="display: inline;">{{ user.username }} 계정으로 로그인 되었습니다.</p>
-    <form method="post" action="{% url 'logout' %}" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">로그아웃</button>
-    </form>
+{% if user.is_authenticated %} <!-- 사용자 로그인이 감지된 경우-->
+<div style="display:flex; justify-content: space-between; margin: 12px;">
+    <div>
+        <p style="display: inline;">{{ user.username }} 계정으로 로그인 되었습니다.</p>
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" id="logOut">로그아웃</button>
+        </form>
+    </div>
+    <button type="submit" id="createBoard">보드 생성하기</button>
 </div>
-
-{% else %}
+{% else %} <!-- 사용자 로그인이 되어 있지 않은 상태 -->
 <div>
     <p style="display: inline;">보드를 생성하려면 <a href="{% url 'login' %}">로그인</a>을 해야 합니다.</p>
 </div>
 {% endif %}
-<h3 style="text-align:center;">대시보드</h3>
 
+
+<h3 style="text-align:center;">대시보드</h3>
 <div class="board-grid">
     {% for board in boards %}
     <div class="board">

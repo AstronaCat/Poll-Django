@@ -20,7 +20,6 @@ class Board(models.Model):
 class Question(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     text = models.TextField()
-    # media = models.OneToOneField(Media, on_delete=models.CASCADE, null=True, blank=True)
 
     MEDIA_TYPES = [('image', 'Image'), ('video', 'Video')]
     media_type = models.CharField(max_length=5, choices=MEDIA_TYPES, null=True, blank=True)
@@ -41,13 +40,16 @@ class Question(models.Model):
     # cast_vote() function 수정 필요
     def cast_vote(self, choice_id):
         choice = self.choice_set.get(id=choice_id)
-        choice
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.CharField(max_length=100)
     votes = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.text
+    
     def increment_votes(self):
         self.votes += 1
         self.save()

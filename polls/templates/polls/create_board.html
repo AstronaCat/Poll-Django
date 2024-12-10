@@ -1,59 +1,52 @@
 {% block content %}
-<h2>Create Board</h2>
-
-{% if user.is_authenticated %}
-<a href="{% url 'create_board' %}">
-    <button>Create Board</button>
-</a>
-{% else %}
-<p>You must <a href="{% url 'login' %}">login</a> to create a board.</p>
-{% endif %}
+<h2>보드 생성 페이지</h2>
 
 <form method="post">
     {% csrf_token %}
-    <label for="name">Board Name:</label>
+    <label for="name">보드 이름:</label>
     <input type="text" name="name" id="name" required>
     <br>
 
-    <h3>Add Questions</h3>
+    <h3>투표 생성하기</h3>
     <div id="questions">
         <div class="question">
-            <label for="question-text">Question:</label>
-            <input type="text" name="questions[]" placeholder="Enter question" required>
+            <label for="question-text">투표 주제:</label>
+            <input type="text" name="questions[]" placeholder="질문할 내용을 입력하세요" required>
             <br>
-            <label for="media-type">Media Type:</label>
+            <label for="media-type">참고용 미디어:</label>
             <select name="media_type[]">
-                <option value="">None</option>
-                <option value="image">Image</option>
-                <option value="video">Video</option>
+                <option value="">---</option>
+                <option value="image">이미지</option>
+                <option value="video">유튜브 영상</option>
             </select>
             <br>
-            <label for="media-url">Media URL:</label>
-            <input type="url" name="media_url[]" placeholder="Enter media URL">
+            <label for="media-url">미디어 URL:</label>
+            <input type="url" name="media_url[]" placeholder="미디어 URL을 삽입하세요">
         </div>
     </div>
-    <button type="button" id="add-question">Add Another Question</button>
+    <button type="button" id="addQuestion">투표 주제 추가하기</button>
+    <button type="button" id="deleteQuestion">투표 주제 삭제하기</button>
     <br>
-    <button type="submit">Create Board</button>
+    <button type="submit">생성 완료</button>
 </form>
 
 <script>
-    document.getElementById('add-question').addEventListener('click', function () {
+    document.getElementById('addQuestion').addEventListener('click', function () {
         let questionDiv = document.createElement('div');
         questionDiv.className = 'question';
         questionDiv.innerHTML = `
-            <label for="question-text">Question:</label>
-            <input type="text" name="questions[]" placeholder="Enter question" required>
+            <label for="question-text">투표 주제:</label>
+            <input type="text" name="questions[]" placeholder="질문할 내용을 입력하세요" required>
             <br>
-            <label for="media-type">Media Type:</label>
+            <label for="media-type">참고용 미디어:</label>
             <select name="media_type[]">
-                <option value="">None</option>
-                <option value="image">Image</option>
-                <option value="video">Video</option>
+                <option value="">---</option>
+                <option value="image">이미지</option>
+                <option value="video">유튜브 영상</option>
             </select>
             <br>
-            <label for="media-url">Media URL:</label>
-            <input type="url" name="media_url[]" placeholder="Enter media URL">
+            <label for="media-url">미디어 URL:</label>
+            <input type="url" name="media_url[]" placeholder="미디어 URL을 삽입하세요">
         `;
         document.getElementById('questions').appendChild(questionDiv);
     });
