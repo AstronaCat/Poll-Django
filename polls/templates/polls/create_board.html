@@ -1,12 +1,11 @@
 {% block content %}
 <h2>보드 생성 페이지</h2>
 
-<form method="post">
+<form method="post" action="/create_board/">
     {% csrf_token %}
     <label for="name">보드 이름:</label>
     <input type="text" name="name" id="name" required>
     <br>
-
 
     <h3>투표 생성하기</h3>
     <div id="questions">
@@ -23,22 +22,30 @@
         questionDiv.className = 'question';
         questionDiv.innerHTML = `
             <label for="question-text">투표 주제:</label>
-            <input type="text" name="questions[]" placeholder="질문할 내용을 입력하세요" required>
+            <input type="text" name="questions" placeholder="질문할 내용을 입력하세요" required>
             <br>
             <label for="media-type">참고용 미디어:</label>
-            <select name="media_type[]">
+            <select name="media_type">
                 <option value="">---</option>
                 <option value="image">이미지</option>
                 <option value="video">유튜브 영상</option>
             </select>
             <br>
             <label for="media-url">미디어 URL:</label>
-            <input type="url" name="media_url[]" placeholder="미디어 URL을 삽입하세요">
+            <input type="url" name="media_url" placeholder="미디어 URL을 삽입하세요">
             <br>
             <button type="button" class="deleteQuestion">투표 삭제하기</button>
         `;
         return questionDiv;
     }
+
+    // HTML이 처음 로드될 때 발생하는 event
+    document.addEventListener("DOMContentLoaded", function () {
+        const questionContainer = document.getElementById('questions');
+        const newQuestion = createQuestionElement();
+        questionContainer.appendChild(newQuestion);
+    });
+
 
     document.getElementById('addQuestion').addEventListener('click', function () {
         const questionContainer = document.getElementById('questions');
@@ -52,5 +59,8 @@
                 event.target.parentElement.remove();
             }
         });
+
+    document.getElementById
+
 </script>
 {% endblock %}
