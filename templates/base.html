@@ -44,7 +44,7 @@
                             <span>{{ user.username }} 계정으로 로그인 되었습니다.</span>
                             <form method="post" action="{% url 'logout' %}" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" id="logOut" class="my-0">로그아웃</button>
+                                <button type="submit" id="logOut" class="btn btn-secondary btn-sm">로그아웃</button>
                             </form>
                         </div>
                     </div>
