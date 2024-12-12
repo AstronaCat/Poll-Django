@@ -8,7 +8,7 @@ from polls.models import Board, Question, Choice
 
 @admin.register(Board)
 class BoardAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_by')
+    list_display = ('name', 'created_by', 'start_time', 'end_time', 'activate')
 
 
 @admin.register(Question)

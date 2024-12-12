@@ -2,8 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Board(models.Model):
-    name = models.CharField(max_length=100)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, verbose_name='보드의 이름')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='보드 생성자')
+    start_time = models.DateTimeField(null=True, blank=True, verbose_name='투표 시작시각')  # 시작 시간
+    end_time = models.DateTimeField(null=True, blank=True, verbose_name='투표 종료시각')    # 종료 시간
+    activate = models.BooleanField(default=False, verbose_name='보드 활성화')             # 활성화 여부
 
     def add_question(self, text, media=None):
         return Question.objects.create(board=self, text=text, media=media)
