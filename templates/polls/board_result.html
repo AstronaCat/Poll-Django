@@ -43,20 +43,8 @@
                     <p>-- 미디어가 없습니다 --</p>
                 {% endif %}
                 </div>
-                <div class="col-6 px-2">
-                    {% for choice in question.choices %}
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="question-{{ question.id }}"
-                                   id="choice-{{ choice.id }}"
-                                   value="{{ choice.id }}">
-                            <label class="form-check-label" for="choice-{{ choice.id }}">
-                                {{ choice.text }}
-                            </label>
-                        </div>
-                    {% empty %}
-                        <li>이 질문에는 선택지가 없습니다.</li>
-                    {% endfor %}
+                <div class="col-6 px-2 d-flex justify-content-center align-items-center">
+                    <canvas id="question-chart-{{question.id}}" style="max-width: 25rem; max-height: 25rem"></canvas>
                 </div>
             </div>
         </div>
@@ -74,8 +62,47 @@
 </div>
 
 <script>
-    document.getElementById("backBtn").addEventListener("click", function () {
+    $('#backBtn').click(function () {
         window.history.back(); // 브라우저 히스토리에서 이전 페이지로 이동
+    });
+
+    $(document).ready(function () {
+        const choiceLabels = ['AAAA', 'BBBB', 'CCCC'];
+        const choiceCounts = [3, 4, 5];
+
+        const ctx = $('#question-chart-5')[0].getContext('2d');
+        const questionsPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: choiceLabels, // 각 질문 제목
+                datasets: [{
+                    data: choiceCounts, // 선택지 개수
+                    backgroundColor: [
+                        '#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d', '#17a2b8'
+                    ], // 각 섹션의 색상
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom', // 범례 위치
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                const question = choiceLabels[tooltipItem.dataIndex];
+                                const count = choiceCounts[tooltipItem.dataIndex];
+                                return `${question}: ${count} 투표`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
+
     });
 </script>
 {% endblock %}
