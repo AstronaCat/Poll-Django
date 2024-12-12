@@ -2,45 +2,26 @@
 
 {% block content %}
 <div class="container mt-2">
-    <h2 class="mb-4 text-center">보드 수정</h2>
+    <h2 class="mb-4 text-center">투표하기</h2>
     <div class="mb-3 row">
         <label for="name" class="col-form-label col-sm-3">보드 이름</label>
         <div class="col-sm-9">
-            <input type="text" class="form-control" id="name" name="name" value="{{ board.name }}" placeholder="보드의 이름을 입력하세요" required>
+            <input type="text" class="form-control" id="name" name="name" value="{{ board.name }}" placeholder="보드의 이름을 입력하세요" disabled>
         </div>
     </div>
     <div class="mb-3 row">
         <label for="start_time" class="col-sm-3 col-form-label">투표 시작 시각</label>
         <div class="col-sm-9">
             <input type="datetime-local" class="form-control" id="start_time" name="start_time"
-                   value="{{ board.start_time|date:'Y-m-d H:i'}}">
+                   value="{{ board.start_time|date:'Y-m-d H:i'}}" disabled>
         </div>
     </div>
     <div class="mb-3 row">
         <label for="end_time" class="col-sm-3 col-form-label">투표 종료 시각</label>
         <div class="col-sm-9">
             <input type="datetime-local" class="form-control" id="end_time" name="end_time"
-                   value="{{ board.end_time|date:'Y-m-d H:i'}}">
+                   value="{{ board.end_time|date:'Y-m-d H:i'}}" disabled>
         </div>
-    </div>
-    <div class="mb-3 row">
-        <label class="col-sm-3 col-form-label">보드 활성화 여부</label>
-        <div class="col-sm-9">
-            <input type="checkbox" class="form-check-input" id="activate" name="activate"
-                   {% if board.activate %}checked{% endif %}>
-        </div>
-    </div>
-    <div class="mb-3 row">
-        <label class="col-sm-3 col-form-label">투표 종료 여부</label>
-        <div class="col-sm-9">
-            <input type="checkbox" class="form-check-input" id="completed" name="completed"
-                   {% if board.completed %}checked{% endif %}>
-        </div>
-    </div>
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-primary me-2" id="modifyBoardBtn"><i class="bi bi-pencil"></i> 보드 정보 수정</button>
-        <button class="btn btn-danger me-2"><i class="bi bi-trash"></i> 보드 삭제</button>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createQuestionModal"><i class="bi bi-plus-lg"></i> 질문 만들기</button>
     </div>
 </div>
 
@@ -51,7 +32,6 @@
         <div class="card-body">
             <div class="card-title d-flex justify-content-between">
                 <div class="fw-bolder">{{ question.text }}</div>
-                <button class="btn btn-secondary btn-sm me-2"><i class="bi bi-pencil"></i> 질문 수정</button>
             </div>
             <div class="row">
                 <div class="col-6 px-2">
@@ -64,13 +44,19 @@
                 {% endif %}
                 </div>
                 <div class="col-6 px-2">
-                    <ul>
                     {% for choice in question.choices %}
-                        <li>{{ choice.text }} (Votes: {{ choice.votes }})</li>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="choice-{{ question.id }}"
+                                   id="choice-{{ choice.id }}"
+                                   value="{{ choice.id }}">
+                            <label class="form-check-label" for="choice-{{ choice.id }}">
+                                {{ choice.text }}
+                            </label>
+                        </div>
                     {% empty %}
                         <li>이 질문에는 선택지가 없습니다.</li>
                     {% endfor %}
-                    </ul>
                 </div>
             </div>
         </div>
@@ -80,58 +66,13 @@
 {% endfor %}
 </div>
 
-<!-- Question Modal -->
-<div class="modal fade" id="createQuestionModal" tabindex="-1" aria-labelledby="createQuestionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createQuestionModalLabel">새 질문 만들기</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="createQuestionForm">
-                    {% csrf_token %}
-                    <!-- 질문 입력 -->
-                    <div class="mb-3">
-                        <label for="questionText" class="form-label">질문 내용</label>
-                        <textarea class="form-control" id="questionText" rows="3" required></textarea>
-                    </div>
-
-                    <!-- 미디어 타입 선택 -->
-                    <div class="mb-3">
-                        <label for="mediaType" class="form-label">미디어 유형</label>
-                        <select class="form-select" id="mediaType">
-                            <option value="">선택하세요</option>
-                            <option value="image">이미지</option>
-                            <option value="video">비디오</option>
-                        </select>
-                    </div>
-
-                    <!-- 미디어 URL -->
-                    <div class="mb-3" id="mediaUrlContainer">
-                        <label for="mediaUrl" class="form-label">미디어 URL</label>
-                        <input type="url" class="form-control" id="mediaUrl" placeholder="미디어 URL을 입력하세요">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="answer1" class="form-label">답변 보기</label>
-                        <input type="text" class="form-control mb-1" id="answer1" placeholder="첫번째 보기를 입력하세요">
-                        <input type="text" class="form-control mb-1" id="answer2" placeholder="두번째 보기를 입력하세요">
-                        <input type="text" class="form-control mb-1" id="answer3" placeholder="세번째 보기를 입력하세요">
-                        <input type="text" class="form-control mb-1" id="answer4" placeholder="네번째 보기를 입력하세요">
-                        <input type="text" class="form-control mb-1" id="answer5" placeholder="다섯번째 보기를 입력하세요">
-                        <input type="text" class="form-control" id="answer6" placeholder="여섯번째 보기를 입력하세요">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                        <button type="submit" id="createQuestionBtn" class="btn btn-primary">질문 만들기</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="text-center my-4">
+    <button type="button" class="btn btn-primary" id="voteBtn">
+        <i class="bi bi-send"></i>
+        투표하기
+    </button>
 </div>
+
 
 <script>
 $(document).ready(function () {

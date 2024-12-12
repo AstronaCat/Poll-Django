@@ -26,7 +26,7 @@
                     <div>질문 없음</div>
                 {% endif %}
                 </div>
-                <a href="{% url 'board_modify' board.id %}" class="btn btn-outline-secondary btn-sm mt-auto">투표하기</a>
+                <a href="{% url 'board_vote' board.id %}" class="btn btn-outline-secondary btn-sm mt-auto">투표하기</a>
             </div>
         </div>
     {% endfor %}
