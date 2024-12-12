@@ -10,10 +10,9 @@ import json
 
 
 def dashboard(request):
-    boards = Board.objects.all()
-    for board in boards:
-        board.has_image = any(q.has_image() for q in board.question_set.all())
-        board.has_video = any(q.has_video() for q in board.question_set.all())
+    boards = Board.objects.filter(activate=True, completed=False).order_by('-created_at').prefetch_related(
+        Prefetch('question_set', queryset=Question.objects.order_by('id'), to_attr='questions')
+    )
     return render(request, 'polls/dashboard.html', {'boards': boards})
 
 
