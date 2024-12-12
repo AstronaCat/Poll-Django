@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -18,7 +19,10 @@ def dashboard(request):
 
 @login_required
 def my_page(request):
-    boards = Board.objects.filter(created_by=request.user).order_by('-created_at')
+    # boards = Board.objects.filter(created_by=request.user).order_by('-created_at')
+    boards = Board.objects.filter(created_by=request.user).order_by('-created_at').prefetch_related(
+        Prefetch('question_set', queryset=Question.objects.order_by('id'), to_attr='questions')
+    )
     return render(request, 'polls/my_page.html', {'boards': boards})
 
 

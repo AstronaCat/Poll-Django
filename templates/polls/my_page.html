@@ -22,15 +22,22 @@
     {% for board in boards %}
         <div class="card col m-2 shadow">
             <div class="card-body">
-                <h5 class="card-title">{{ board.name }}</h5>
-                <p class="card-text">Created by: {{ board.created_by.username }}</p>
-                {% if board.has_image %}
-                <p class="card-text">Image Included</p>
-                {% elif board.has_video %}
-                <p class="card-text">Video Included</p>
+                <div class="card-title fw-bolder">{{ board.name }}</div>
+                <p class="card-text fs-6">Created by: {{ board.created_by.username }}</p>
+                <div>
+                {% if board.questions|length > 0 %}
+                    <div>질문 {{ board.question_count }} 개</div>
+                    {% if board.questions.0.media_type == 'image' %}
+                        <img src="{{ board.questions.0.media_url }}" alt="Image" class="img-thumbnail" style="max-width: 10rem">
+                    {% elif board.questions.0.media_type == 'video' %}
+                        <img src="https://img.youtube.com/vi/{{ board.questions.0.video_id }}/maxresdefault.jpg" alt="Image" class="img-thumbnail" style="max-width: 10rem">
+                    {% else %}
+                        미디어 없음
+                    {% endif %}
                 {% else %}
-                <p class="card-text">No Media</p>
+                    <div>질문 없음</div>
                 {% endif %}
+                </div>
                 <a href="{% url 'board_modify' board.id %}" class="btn btn-secondary btn-sm">수정하기</a>
             </div>
         </div>
