@@ -9,6 +9,10 @@ class Board(models.Model):
     activate = models.BooleanField(default=False, verbose_name='보드 활성화')             # 활성화 여부
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성 시각')  # 자동으로 생성 시간 입력
 
+    @property
+    def question_count(self):
+        return self.question_set.count()
+
     def add_question(self, text, media=None):
         return Question.objects.create(board=self, text=text, media=media)
 
@@ -37,6 +41,13 @@ class Question(models.Model):
 
     def has_video(self):
         return self.media_type == 'video'
+
+    @property
+    def video_id(self):
+        if self.media_type == 'video' and self.media_url:
+            return self.media_url[-11:]  # https://www.youtube.com/watch?v=llaMn3OZGn8  에서 뒤 11자리가 ID임.
+        else:
+            return None
 
     def add_choice(self, text):
         return Choice.objects.create(question=self, text=text)
