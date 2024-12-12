@@ -23,7 +23,6 @@ def create_board(request):
     return render(request, 'polls/create_board.html')
 
 
-
 def dashboard(request):
     boards = Board.objects.all()
     for board in boards:
@@ -31,6 +30,17 @@ def dashboard(request):
         board.has_video = any(q.has_video() for q in board.question_set.all())
     return render(request, 'polls/dashboard.html', {'boards': boards})
 
+
+@login_required
+def my_page(request):
+    boards = Board.objects.filter(created_by=request.user)
+    return render(request, 'polls/my_page.html', {'boards': boards})
+
+
+def done_page(request):
+    # #TODO 완료된 것으로 필터링
+    boards = Board.objects.filter()
+    return render(request, 'polls/done_page.html', {'boards': boards})
 
 
 def vote(request, question_id):
