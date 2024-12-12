@@ -66,15 +66,23 @@ def api_create_question(request):
     if request.method == "POST":
         data = json.loads(request.body)
         print(data)
-        """
-        new_board = Board.objects.create(
-            name=data.get('name'),
-            created_by=request.user,
-            start_time=data.get('start_time') or None,
-            end_time=data.get('end_time') or None,
-            activate=data.get('activate', False),
+        board = Board.objects.get(id=data.get("board_id"))
+        question = Question.objects.create(
+            board=board,
+            text=data.get("text"),
+            media_type=data.get("media_type"),
+            media_url=data.get("media_url")
         )
-        
-        return JsonResponse({'id': new_board.id, 'name': new_board.name}, status=201)  # 생성된 객체 반환
-        """
-        return JsonResponse({'id': 0, 'name': "OK"}, status=201)  # 생성된 객체 반환
+
+        count = 0
+        for i in range(1, 10):
+            answer = data.get(f"answer{i}")
+            if not answer:
+                break
+            Choice.objects.create(
+                question=question,
+                text=answer
+            )
+            count += 1
+
+        return JsonResponse({'id': question.id, 'name': question.text, 'answwers': count}, status=201)  # 생성된 객체 반환
