@@ -78,13 +78,21 @@ def board_result(request, id):
         board = Board.objects.get(id=id)
         questions = board.question_set.all()  # board와 연결된 모든 질문 가져오기
         # 각 질문에 대한 choice를 함께 가져옴
+        chart_data = []
         for question in questions:
             question.choices = question.choice_set.all()  # choice들을 속성으로 추가
+            chart_data.append({
+                "question_id": question.id,
+                "choice_labels": [choice.text for choice in question.choices],
+                "choice_count": [choice.votes for choice in question.choices]
+            })
 
+        chart_data_json = json.dumps(chart_data)  # JSON 문자열로 변환
         context = {
             'sub_title': '투표 결과 보기',
             'board': board,
             'questions': questions,  # question과 그에 연결된 choice들 포함
+            'chart_data': chart_data_json
         }
         return render(request, 'polls/board_result.html', context)
     except Board.DoesNotExist:

@@ -67,40 +67,42 @@
     });
 
     $(document).ready(function () {
-        const choiceLabels = ['AAAA', 'BBBB', 'CCCC'];
-        const choiceCounts = [3, 4, 5];
 
-        const ctx = $('#question-chart-5')[0].getContext('2d');
-        const questionsPieChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: choiceLabels, // 각 질문 제목
-                datasets: [{
-                    data: choiceCounts, // 선택지 개수
-                    backgroundColor: [
-                        '#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d', '#17a2b8'
-                    ], // 각 섹션의 색상
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom', // 범례 위치
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                const question = choiceLabels[tooltipItem.dataIndex];
-                                const count = choiceCounts[tooltipItem.dataIndex];
-                                return `${question}: ${count} 투표`;
+
+        const chartData = {{chart_data|safe}};
+
+        for (const q of chartData) {
+            const choiceLabels = q.choice_labels;  //['AAAA', 'BBBB', 'CCCC'];
+            const choiceCounts = q.choice_count;  // [3, 4, 5];
+
+            const ctx = $(`#question-chart-${q.question_id}`)[0].getContext('2d');
+            const questionsPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: choiceLabels, // 각 질문 제목
+                    datasets: [{
+                        data: choiceCounts // 선택지 개수
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom', // 범례 위치
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const choice = choiceLabels[tooltipItem.dataIndex];
+                                    const count = choiceCounts[tooltipItem.dataIndex];
+                                    return `${choice}: ${count} 투표`;
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
-
+            });
+        }
 
 
     });
