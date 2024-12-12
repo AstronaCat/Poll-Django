@@ -27,11 +27,11 @@ def done_page(request):
     boards = Board.objects.filter()
     return render(request, 'polls/done_page.html', {'boards': boards})
 
-def board_detail(request, id):
+def board_modify(request, id):
     try:
         # URL 경로에서 받은 id 값으로 해당 board 찾기
         board = Board.objects.get(id=id)
-        return render(request, 'polls/board_detail.html', {'board': board, 'sub_title': '보드 수정'})
+        return render(request, 'polls/board_modify.html', {'board': board, 'sub_title': '보드 수정'})
     except Board.DoesNotExist:
         return HttpResponse('Board not found', status=404)
 

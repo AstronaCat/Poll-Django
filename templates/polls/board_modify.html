@@ -1,0 +1,90 @@
+{% extends 'sub-base.html' %}
+
+{% block content %}
+<div class="container mt-2">
+    <h2 class="mb-4">보드 수정</h2>
+    <div class="mb-3 row">
+        <label for="id_name" class="col-form-label col-sm-3">보드 이름</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="name" name="name" value="{{ board.name }}" placeholder="보드의 이름을 입력하세요" required>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="start_time" class="col-sm-3 col-form-label">투표 시작 시각</label>
+        <div class="col-sm-9">
+            <input type="datetime-local" class="form-control" id="start_time" name="start_time"
+                   value="{{ board.start_time|date:'Y-m-d H:i'}}">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="end_time" class="col-sm-3 col-form-label">투표 종료 시각</label>
+        <div class="col-sm-9">
+            <input type="datetime-local" class="form-control" id="end_time" name="end_time"
+                   value="{{ board.end_time|date:'Y-m-d H:i'}}">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label class="col-sm-3 col-form-label">보드 활성화 여부</label>
+        <div class="col-sm-9">
+            <input type="checkbox" class="form-check-input" id="activate" name="activate"
+                   {% if board.activate %}checked{% endif %}>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary"><i class="bi bi-pencil"></i> 보드 정보 수정</button>
+        <button class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#createBoardModal"><i class="bi bi-plus-lg"></i> 질문 만들기</button>
+    </div>
+</div>
+
+<!-- 모달 다이얼로그 -->
+<div class="modal fade" id="createBoardModal" tabindex="-1" aria-labelledby="createBoardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createBoardModalLabel">질문 만들기</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 여기에 내용을 넣으세요 -->
+                <form id="createBoardForm">
+                    <div class="mb-3">
+                        <label for="questionText" class="form-label">질문 내용</label>
+                        <input type="text" class="form-control" id="questionText" name="questionText" required>
+                    </div>
+                    <!-- Start Time -->
+                    <div class="mb-3">
+                        <label for="startTime" class="form-label">시작 시간</label>
+                        <input
+                            type="datetime-local"
+                            class="form-control"
+                            id="startTime"
+                            name="start_time">
+                    </div>
+                    <!-- End Time -->
+                    <div class="mb-3">
+                        <label for="endTime" class="form-label">종료 시간</label>
+                        <input
+                            type="datetime-local"
+                            class="form-control"
+                            id="endTime"
+                            name="end_time">
+                    </div>
+                    <!-- Activate -->
+                    <div class="form-check mb-3">
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="activate"
+                            name="activate">
+                        <label for="activate" class="form-check-label">활성화</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" id="createBoardBtn" class="btn btn-primary">만들기</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

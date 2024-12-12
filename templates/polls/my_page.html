@@ -31,7 +31,7 @@
                 {% else %}
                 <p class="card-text">No Media</p>
                 {% endif %}
-                <a href="{% url 'board_detail' board.id %}" class="btn btn-secondary btn-sm">수정하기</a>
+                <a href="{% url 'board_modify' board.id %}" class="btn btn-secondary btn-sm">수정하기</a>
             </div>
         </div>
     {% endfor %}
