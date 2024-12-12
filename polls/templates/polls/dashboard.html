@@ -22,17 +22,19 @@
 <h3 style="text-align:center;">대시보드</h3>
 <div class="board-grid">
     {% for board in boards %}
-    <div class="board">
-        <p style="font-size: 20px;">{{ board.name }}</p>
-        <p style="text-align:right; font-size:12px">Created by: {{ board.created_by.username }}</p>
-        {% if board.has_image %}
-        <p style="text-decoration: underline; font-size: 14px; color:gray;">Image Included</p>
-        {% elif board.has_video %}
-        <p style="text-decoration: underline; font-size: 14px; color:gray;">Video Included</p>
-        {% else %}
-        <p style="text-decoration: underline; font-size: 14px; color:gray;">No Media</p>
-        {% endif %}
-        <button type="submit" class="btn btn-secondary btn-sm">투표하기</button>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ board.name }}</h5>
+            <p class="card-text">Created by: {{ board.created_by.username }}</p>
+            {% if board.has_image %}
+            <p class="card-text">Image Included</p>
+            {% elif board.has_video %}
+            <p class="card-text">Video Included</p>
+            {% else %}
+            <p class="card-text">No Media</p>
+            {% endif %}
+            <button type="submit" class="btn btn-secondary btn-sm">투표하기</button>
+        </div>
     </div>
     {% endfor %}
 </div>
