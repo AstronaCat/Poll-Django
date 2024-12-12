@@ -7,6 +7,7 @@ urlpatterns = [
     path('my/', views.my_page, name='my_page'),
     path('board/modify/<int:id>/', views.board_modify, name='board_modify'),
     path('board/vote/<int:id>/', views.board_vote, name='board_vote'),
+    path('board/result/<int:id>/', views.board_result, name='board_result'),
 
     # 이후는 REST API 임.
     path('api/create_board/', views.api_create_board, name='api_create_board'),

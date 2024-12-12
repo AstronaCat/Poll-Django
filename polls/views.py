@@ -26,8 +26,10 @@ def my_page(request):
 
 
 def done_page(request):
-    # #TODO 완료된 것으로 필터링
-    boards = Board.objects.filter()
+    boards = Board.objects.filter(completed=True).order_by('-created_at').prefetch_related(
+        Prefetch('question_set', queryset=Question.objects.order_by('id'), to_attr='questions')
+    )
+
     return render(request, 'polls/done_page.html', {'boards': boards})
 
 def board_modify(request, id):
@@ -68,6 +70,26 @@ def board_vote(request, id):
         return render(request, 'polls/board_vote.html', context)
     except Board.DoesNotExist:
         return HttpResponse('Board not found', status=404)
+
+
+def board_result(request, id):
+    try:
+        # URL 경로에서 받은 id 값으로 해당 board 찾기
+        board = Board.objects.get(id=id)
+        questions = board.question_set.all()  # board와 연결된 모든 질문 가져오기
+        # 각 질문에 대한 choice를 함께 가져옴
+        for question in questions:
+            question.choices = question.choice_set.all()  # choice들을 속성으로 추가
+
+        context = {
+            'sub_title': '투표 결과 보기',
+            'board': board,
+            'questions': questions,  # question과 그에 연결된 choice들 포함
+        }
+        return render(request, 'polls/board_result.html', context)
+    except Board.DoesNotExist:
+        return HttpResponse('Board not found', status=404)
+
 
 def vote(request, question_id):
     question = get_object_or_404(Question, id=question_id)
