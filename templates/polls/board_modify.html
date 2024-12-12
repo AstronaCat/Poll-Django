@@ -37,6 +37,36 @@
     </div>
 </div>
 
+<!-- 질문들 -->
+<div class="container mt-2">
+{% for question in questions %}
+    <div class="card mb-2 shadow">
+        <div class="card-body">
+            <div class="card-title d-flex justify-content-between">
+                <span class="">{{ question.text }}</span>
+                <button class="btn btn-secondary btn-sm me-2"><i class="bi bi-pencil"></i> 질문 수정</button>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {{question.media_url}}
+                </div>
+                <div class="col-6">
+                    <ul>
+                    {% for choice in question.choices %}
+                        <li>{{ choice.text }} (Votes: {{ choice.votes }})</li>
+                    {% empty %}
+                        <li>이 질문에는 선택지가 없습니다.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% empty %}
+이 보드에는 아직 질문이 없습니다. "질문 만들기" 버튼을 눌러 만드세요.
+{% endfor %}
+</div>
+
 <!-- Question Modal -->
 <div class="modal fade" id="createQuestionModal" tabindex="-1" aria-labelledby="createQuestionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -136,6 +166,7 @@
                     $('#createQuestionModal').modal('hide');
                     $('#createQuestionForm')[0].reset();
                     alert('질문이 성공적으로 생성되었습니다.');
+                    window.location.reload(); // 페이지 새로고침
                 },
                 error: function (xhr, errmsg, err) {
                     alert('오류가 발생했습니다: ' + errmsg);
