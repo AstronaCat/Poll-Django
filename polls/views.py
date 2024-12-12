@@ -58,3 +58,23 @@ def api_create_board(request):
             activate=data.get('activate', False),
         )
         return JsonResponse({'id': new_board.id, 'name': new_board.name}, status=201)  # 생성된 객체 반환
+
+
+@login_required
+@csrf_exempt
+def api_create_question(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print(data)
+        """
+        new_board = Board.objects.create(
+            name=data.get('name'),
+            created_by=request.user,
+            start_time=data.get('start_time') or None,
+            end_time=data.get('end_time') or None,
+            activate=data.get('activate', False),
+        )
+        
+        return JsonResponse({'id': new_board.id, 'name': new_board.name}, status=201)  # 생성된 객체 반환
+        """
+        return JsonResponse({'id': 0, 'name': "OK"}, status=201)  # 생성된 객체 반환

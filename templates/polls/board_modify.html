@@ -32,59 +32,116 @@
     </div>
     <div class="d-flex justify-content-end">
         <button class="btn btn-primary"><i class="bi bi-pencil"></i> 보드 정보 수정</button>
-        <button class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#createBoardModal"><i class="bi bi-plus-lg"></i> 질문 만들기</button>
+        <button class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#createQuestionModal"><i class="bi bi-plus-lg"></i> 질문 만들기</button>
     </div>
 </div>
 
-<!-- 모달 다이얼로그 -->
-<div class="modal fade" id="createBoardModal" tabindex="-1" aria-labelledby="createBoardModalLabel" aria-hidden="true">
+<!-- Question Modal -->
+<div class="modal fade" id="createQuestionModal" tabindex="-1" aria-labelledby="createQuestionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createBoardModalLabel">질문 만들기</h5>
+                <h5 class="modal-title" id="createQuestionModalLabel">새 질문 만들기</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- 여기에 내용을 넣으세요 -->
-                <form id="createBoardForm">
+                <form id="createQuestionForm">
+                    {% csrf_token %}
+                    <!-- 질문 입력 -->
                     <div class="mb-3">
                         <label for="questionText" class="form-label">질문 내용</label>
-                        <input type="text" class="form-control" id="questionText" name="questionText" required>
+                        <textarea class="form-control" id="questionText" rows="3" required></textarea>
                     </div>
-                    <!-- Start Time -->
+
+                    <!-- 미디어 타입 선택 -->
                     <div class="mb-3">
-                        <label for="startTime" class="form-label">시작 시간</label>
-                        <input
-                            type="datetime-local"
-                            class="form-control"
-                            id="startTime"
-                            name="start_time">
+                        <label for="mediaType" class="form-label">미디어 유형</label>
+                        <select class="form-select" id="mediaType">
+                            <option value="">선택하세요</option>
+                            <option value="image">이미지</option>
+                            <option value="video">비디오</option>
+                        </select>
                     </div>
-                    <!-- End Time -->
+
+                    <!-- 미디어 URL -->
+                    <div class="mb-3" id="mediaUrlContainer">
+                        <label for="mediaUrl" class="form-label">미디어 URL</label>
+                        <input type="url" class="form-control" id="mediaUrl" placeholder="미디어 URL을 입력하세요">
+                    </div>
+
                     <div class="mb-3">
-                        <label for="endTime" class="form-label">종료 시간</label>
-                        <input
-                            type="datetime-local"
-                            class="form-control"
-                            id="endTime"
-                            name="end_time">
+                        <label for="answer1" class="form-label">답변 보기</label>
+                        <input type="text" class="form-control mb-1" id="answer1" placeholder="첫번째 보기를 입력하세요">
+                        <input type="text" class="form-control mb-1" id="answer2" placeholder="두번째 보기를 입력하세요">
+                        <input type="text" class="form-control mb-1" id="answer3" placeholder="세번째 보기를 입력하세요">
+                        <input type="text" class="form-control mb-1" id="answer4" placeholder="네번째 보기를 입력하세요">
+                        <input type="text" class="form-control mb-1" id="answer5" placeholder="다섯번째 보기를 입력하세요">
+                        <input type="text" class="form-control" id="answer6" placeholder="여섯번째 보기를 입력하세요">
                     </div>
-                    <!-- Activate -->
-                    <div class="form-check mb-3">
-                        <input
-                            type="checkbox"
-                            class="form-check-input"
-                            id="activate"
-                            name="activate">
-                        <label for="activate" class="form-check-label">활성화</label>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" id="createQuestionBtn" class="btn btn-primary">질문 만들기</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="button" id="createBoardBtn" class="btn btn-primary">만들기</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        // 폼 제출 시 AJAX 요청 보내기
+        $('#createQuestionBtn').click(function (e) {
+            e.preventDefault();  // 기본 폼 제출 동작 방지
+
+            var questionText = $('#questionText').val();
+            var mediaType = $('#mediaType').val();
+            var mediaUrl = $('#mediaUrl').val();
+            var answer1 = $('#answer1').val();
+            var answer2 = $('#answer2').val();
+            var answer3 = $('#answer3').val();
+            var answer4 = $('#answer4').val();
+            var answer5 = $('#answer5').val();
+            var answer6 = $('#answer6').val();
+
+            if (!questionText) {
+                alert("질문을 입력해주세요.");
+                return;
+            }
+
+            // REST API로 POST 요청 보내기
+            $.ajax({
+                url: '{% url 'api_create_question' %}',  // 여기에 실제 API URL을 입력합니다.
+                type: 'POST',
+                data: JSON.stringify({
+                    'board_id': {{board.id}},
+                    'text': questionText,
+                    'media_type': mediaType,
+                    'media_url': mediaUrl,
+                    'answer1': answer1,
+                    'answer2': answer2,
+                    'answer3': answer3,
+                    'answer4': answer4,
+                    'answer5': answer5,
+                    'answer6': answer6,
+                }),
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'  // CSRF 토큰
+                },
+                success: function (response) {
+                    // 요청이 성공하면 모달 닫고 폼 리셋
+                    $('#createQuestionModal').modal('hide');
+                    $('#createQuestionForm')[0].reset();
+                    alert('질문이 성공적으로 생성되었습니다.');
+                },
+                error: function (xhr, errmsg, err) {
+                    alert('오류가 발생했습니다: ' + errmsg);
+                }
+            });
+        });
+    });
+</script>
+
 {% endblock %}
