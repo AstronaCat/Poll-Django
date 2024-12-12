@@ -47,7 +47,7 @@
                     {% for choice in question.choices %}
                         <div class="form-check">
                             <input class="form-check-input" type="radio"
-                                   name="choice-{{ question.id }}"
+                                   name="question-{{ question.id }}"
                                    id="choice-{{ choice.id }}"
                                    value="{{ choice.id }}">
                             <label class="form-check-label" for="choice-{{ choice.id }}">
@@ -76,104 +76,66 @@
 
 <script>
 $(document).ready(function () {
-    $("#modifyBoardBtn").on("click", function (e) {
+    // 특정 폼의 선택된 값을 가져오는 함수
+    function getSelectedChoice(questionId) {
+        const selected = $(`input[name="question-${questionId}"]:checked`);
+        if (selected.length > 0) {
+            console.log(`Question ID: ${questionId}, 선택된 값: ${selected.val()}`);
+            return selected.val();
+        } else {
+            console.log(`Question ID: ${questionId}, 선택된 값 없음`);
+            return null;
+        }
+    }
+
+
+    $("#voteBtn").on("click", function (e) {
         e.preventDefault();
 
-        // Form data
-        const boardName = $("#name").val().trim();
-        const startTime = $("#start_time").val();  // 2024-12-12T23:53 의 형식임.
-        const endTime = $("#end_time").val();
-        const activate = $("#activate").is(":checked");
-        const completed = $("#completed").is(":checked");
+        const ids = {{question_ids}};
+        let completed = true;
+        const answers = [];
+        for (const qid of ids) {
+            const a = getSelectedChoice(qid);
+            if (!a) completed = false;
+            answers.push(a);
+        }
+        console.log(`answers=${answers}`);
 
-        if (!boardName) {
-            alert("보드 이름을 입력해주세요.");
+        if (!completed) {
+            alert("투표하지 않은 항목이 있습니다.");
             return;
+        }
+
+        const body = [];
+        for (const qid of ids) {
+            body.push({
+                question: qid,
+                answer: getSelectedChoice(qid)
+            });
         }
 
         // AJAX 요청
         $.ajax({
-            url: "{% url 'api_modify_board' %}", // 서버의 URL
+            url: "{% url 'api_vote_board' %}", // 서버의 URL
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({
-                board_id: {{board.id}},
-                name: boardName,
-                start_time: startTime,
-                end_time: endTime,
-                activate: activate,
-                completed: completed
-            }),
+            data: JSON.stringify(body),
             headers: {
                 "X-CSRFToken": $("input[name=csrfmiddlewaretoken]").val(),
             },
             success: function (response) {
-                alert(response.message || "보드가 성공적으로 수정되었습니다!");
-                $("#createBoardModal").modal("hide"); // 모달 닫기
-                window.location.reload(); // 페이지 새로고침
+                alert(response.message || "투표가 성공적으로 완료되었습니다!");
+                window.location.href = "/"; // dashboard로
             },
             error: function (xhr, status, error) {
-                alert("보드 생성 중 오류가 발생했습니다.");
+                alert("투표 등록 중 오류가 발생했습니다.");
                 console.error("Error:", error);
             },
         });
     });
 });
 
-
-    $(document).ready(function () {
-        // 폼 제출 시 AJAX 요청 보내기
-        $('#createQuestionBtn').click(function (e) {
-            e.preventDefault();  // 기본 폼 제출 동작 방지
-
-            var questionText = $('#questionText').val();
-            var mediaType = $('#mediaType').val();
-            var mediaUrl = $('#mediaUrl').val();
-            var answer1 = $('#answer1').val();
-            var answer2 = $('#answer2').val();
-            var answer3 = $('#answer3').val();
-            var answer4 = $('#answer4').val();
-            var answer5 = $('#answer5').val();
-            var answer6 = $('#answer6').val();
-
-            if (!questionText) {
-                alert("질문을 입력해주세요.");
-                return;
-            }
-
-            // REST API로 POST 요청 보내기
-            $.ajax({
-                url: '{% url 'api_create_question' %}',  // 여기에 실제 API URL을 입력합니다.
-                type: 'POST',
-                data: JSON.stringify({
-                    'board_id': {{board.id}},
-                    'text': questionText,
-                    'media_type': mediaType,
-                    'media_url': mediaUrl,
-                    'answer1': answer1,
-                    'answer2': answer2,
-                    'answer3': answer3,
-                    'answer4': answer4,
-                    'answer5': answer5,
-                    'answer6': answer6,
-                }),
-                contentType: 'application/json',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'  // CSRF 토큰
-                },
-                success: function (response) {
-                    // 요청이 성공하면 모달 닫고 폼 리셋
-                    $('#createQuestionModal').modal('hide');
-                    $('#createQuestionForm')[0].reset();
-                    alert('질문이 성공적으로 생성되었습니다.');
-                    window.location.reload(); // 페이지 새로고침
-                },
-                error: function (xhr, errmsg, err) {
-                    alert('오류가 발생했습니다: ' + errmsg);
-                }
-            });
-        });
-    });
 </script>
 
 {% endblock %}
