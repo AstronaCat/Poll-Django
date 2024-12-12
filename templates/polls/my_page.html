@@ -4,8 +4,10 @@
 <h3 class="text-center mt-2">마이 페이지</h3>
 
 {% if user.is_authenticated %} <!-- 사용자 로그인이 감지된 경우-->
-<div style="display:flex; justify-content: space-between; margin: 12px;">
-    <button type="submit" id="createBoard" class="btn btn-primary">보드 생성하기</button>
+<div class="text-end pe-3">
+    <button id="createBoard" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBoardModal">
+        <i class="bi bi-plus-lg"></i> 보드 만들기
+    </button>
 </div>
 {% else %} <!-- 사용자 로그인이 되어 있지 않은 상태 -->
 <div>
@@ -14,6 +16,7 @@
 {% endif %}
 
 <br/>
+<!-- 카드들 -->
 <div class="container text-center">
     <div class="row row-cols-auto justify-content-center">
     {% for board in boards %}
@@ -32,6 +35,61 @@
             </div>
         </div>
     {% endfor %}
+    </div>
+</div>
+
+
+<!-- 모달 다이얼로그 -->
+<div class="modal fade" id="createBoardModal" tabindex="-1" aria-labelledby="createBoardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createBoardModalLabel">보드 만들기</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 여기에 내용을 넣으세요 -->
+                <form id="createBoardForm">
+                    <div class="mb-3">
+                        <label for="boardName" class="form-label">보드 이름</label>
+                        <input type="text" class="form-control" id="boardName" name="boardName" required>
+                    </div>
+                    <!-- Start Time -->
+                    <div class="mb-3">
+                        <label for="startTime" class="form-label">시작 시간</label>
+                        <input
+                            type="datetime-local"
+                            class="form-control"
+                            id="startTime"
+                            name="start_time"
+                            required>
+                    </div>
+                    <!-- End Time -->
+                    <div class="mb-3">
+                        <label for="endTime" class="form-label">종료 시간</label>
+                        <input
+                            type="datetime-local"
+                            class="form-control"
+                            id="endTime"
+                            name="end_time"
+                            required>
+                    </div>
+                    <!-- Activate -->
+                    <div class="form-check mb-3">
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="activate"
+                            name="activate">
+                        <label for="activate" class="form-check-label">활성화</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="submit" class="btn btn-primary" form="createBoardForm">만들기</button>
+            </div>
+        </div>
     </div>
 </div>
 
