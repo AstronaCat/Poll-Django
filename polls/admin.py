@@ -8,7 +8,7 @@ from polls.models import Board, Question, Choice
 
 @admin.register(Board)
 class BoardAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_by', 'created_at', 'start_time', 'end_time', 'activate')
+    list_display = ('name', 'created_by', 'created_at', 'start_time', 'end_time', 'activate', 'completed')
     readonly_fields = ('created_at',)  # created_at 필드를 읽기 전용으로 설정
 
 
