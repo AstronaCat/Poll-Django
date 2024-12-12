@@ -10,4 +10,4 @@ def signup_view(request):
     else:
         form = CustomUserCreationForm()
 
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'signup.html', {'form': form, 'sub_title': '회원 가입'})
