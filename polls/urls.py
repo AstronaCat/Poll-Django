@@ -9,6 +9,7 @@ urlpatterns = [
 
     # 이후는 REST API 임.
     path('api/create_board/', views.api_create_board, name='api_create_board'),
+    path('api/modify_board/', views.api_modify_board, name='api_modify_board'),
     path('api/create_question/', views.api_create_question, name='api_create_question'),
     path('vote/<int:question_id>/', views.vote, name='vote'),
 ]

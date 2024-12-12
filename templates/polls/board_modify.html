@@ -4,7 +4,7 @@
 <div class="container mt-2">
     <h2 class="mb-4">보드 수정</h2>
     <div class="mb-3 row">
-        <label for="id_name" class="col-form-label col-sm-3">보드 이름</label>
+        <label for="name" class="col-form-label col-sm-3">보드 이름</label>
         <div class="col-sm-9">
             <input type="text" class="form-control" id="name" name="name" value="{{ board.name }}" placeholder="보드의 이름을 입력하세요" required>
         </div>
@@ -30,8 +30,15 @@
                    {% if board.activate %}checked{% endif %}>
         </div>
     </div>
+    <div class="mb-3 row">
+        <label class="col-sm-3 col-form-label">투표 종료 여부</label>
+        <div class="col-sm-9">
+            <input type="checkbox" class="form-check-input" id="completed" name="completed"
+                   {% if board.completed %}checked{% endif %}>
+        </div>
+    </div>
     <div class="d-flex justify-content-end">
-        <button class="btn btn-primary me-2"><i class="bi bi-pencil"></i> 보드 정보 수정</button>
+        <button class="btn btn-primary me-2" id="modifyBoardBtn"><i class="bi bi-pencil"></i> 보드 정보 수정</button>
         <button class="btn btn-danger me-2"><i class="bi bi-trash"></i> 보드 삭제</button>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createQuestionModal"><i class="bi bi-plus-lg"></i> 질문 만들기</button>
     </div>
@@ -53,7 +60,7 @@
                 {% elif question.media_type == 'video' %}
                     <iframe width="100%" height="360" src="https://www.youtube.com/embed/{{ question.video_id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 {% else %}
-                    <p><미디어가 없습니다.></p>
+                    <p>-- 미디어가 없습니다 --</p>
                 {% endif %}
                 </div>
                 <div class="col-6 px-2">
@@ -127,6 +134,52 @@
 </div>
 
 <script>
+$(document).ready(function () {
+    $("#modifyBoardBtn").on("click", function (e) {
+        e.preventDefault();
+
+        // Form data
+        const boardName = $("#name").val().trim();
+        const startTime = $("#start_time").val();  // 2024-12-12T23:53 의 형식임.
+        const endTime = $("#end_time").val();
+        const activate = $("#activate").is(":checked");
+        const completed = $("#completed").is(":checked");
+
+        if (!boardName) {
+            alert("보드 이름을 입력해주세요.");
+            return;
+        }
+
+        // AJAX 요청
+        $.ajax({
+            url: "{% url 'api_modify_board' %}", // 서버의 URL
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                board_id: {{board.id}},
+                name: boardName,
+                start_time: startTime,
+                end_time: endTime,
+                activate: activate,
+                completed: completed
+            }),
+            headers: {
+                "X-CSRFToken": $("input[name=csrfmiddlewaretoken]").val(),
+            },
+            success: function (response) {
+                alert(response.message || "보드가 성공적으로 수정되었습니다!");
+                $("#createBoardModal").modal("hide"); // 모달 닫기
+                window.location.reload(); // 페이지 새로고침
+            },
+            error: function (xhr, status, error) {
+                alert("보드 생성 중 오류가 발생했습니다.");
+                console.error("Error:", error);
+            },
+        });
+    });
+});
+
+
     $(document).ready(function () {
         // 폼 제출 시 AJAX 요청 보내기
         $('#createQuestionBtn').click(function (e) {
