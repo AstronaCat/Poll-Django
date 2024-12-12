@@ -1,27 +1,25 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import Board, Question, Choice
 from django.contrib.auth.decorators import login_required
+import json
 
 
 @login_required
-def create_board(request):
+@csrf_exempt
+def api_create_board(request):
     if request.method == "POST":
-        print(request.POST)
-        name = request.POST.get('name')
-        questions = request.POST.getlist('questions')
-        media_type = request.POST.getlist('media_type')
-        media_url = request.POST.getlist('media_url')
-        
-        board = Board.objects.create(name=name, created_by=request.user)
-        print(questions)
-        print(media_type)
-        print(media_url)
-        for i in range(len(questions)):
-            Question.objects.create(board=board, text=questions[i], 
-                                    media_type=media_type[i], media_url=media_url[i])
-        return redirect('dashboard')
-    return render(request, 'polls/create_board.html')
-
+        data = json.loads(request.body)
+        new_board = Board.objects.create(
+            name=data.get('name'),
+            created_by=request.user,
+            start_time=data.get('start_time') or None,
+            end_time=data.get('end_time') or None,
+            activate=data.get('activate', False),
+        )
+        return JsonResponse({'id': new_board.id, 'name': new_board.name}, status=201)  # 생성된 객체 반환
 
 def dashboard(request):
     boards = Board.objects.all()
@@ -33,7 +31,7 @@ def dashboard(request):
 
 @login_required
 def my_page(request):
-    boards = Board.objects.filter(created_by=request.user)
+    boards = Board.objects.filter(created_by=request.user).order_by('-created_at')
     return render(request, 'polls/my_page.html', {'boards': boards})
 
 

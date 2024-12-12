@@ -61,8 +61,7 @@
                             type="datetime-local"
                             class="form-control"
                             id="startTime"
-                            name="start_time"
-                            required>
+                            name="start_time">
                     </div>
                     <!-- End Time -->
                     <div class="mb-3">
@@ -71,8 +70,7 @@
                             type="datetime-local"
                             class="form-control"
                             id="endTime"
-                            name="end_time"
-                            required>
+                            name="end_time">
                     </div>
                     <!-- Activate -->
                     <div class="form-check mb-3">
@@ -87,10 +85,54 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="submit" class="btn btn-primary" form="createBoardForm">만들기</button>
+                <button type="button" id="createBoardBtn" class="btn btn-primary">만들기</button>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+$(document).ready(function () {
+    $("#createBoardBtn").on("click", function (e) {
+        e.preventDefault();
+
+        // Form data
+        const boardName = $("#boardName").val().trim();
+        const startTime = $("#startTime").val();  // 2024-12-12T23:53 의 형식임.
+        const endTime = $("#endTime").val();
+        const activate = $("#activate").is(":checked");
+
+        if (!boardName) {
+            alert("보드 이름을 입력해주세요.");
+            return;
+        }
+
+        // AJAX 요청
+        $.ajax({
+            url: "{% url 'api_create_board' %}", // 서버의 URL
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                name: boardName,
+                start_time: startTime,
+                end_time: endTime,
+                activate: activate,
+            }),
+            headers: {
+                "X-CSRFToken": $("input[name=csrfmiddlewaretoken]").val(),
+            },
+            success: function (response) {
+                // alert(response.message || "보드가 성공적으로 생성되었습니다!");
+                $("#createBoardModal").modal("hide"); // 모달 닫기
+                window.location.reload(); // 페이지 새로고침
+            },
+            error: function (xhr, status, error) {
+                alert("보드 생성 중 오류가 발생했습니다.");
+                console.error("Error:", error);
+            },
+        });
+    });
+});
+
+</script>
 {% endblock %}

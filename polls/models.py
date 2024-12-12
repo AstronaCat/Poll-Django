@@ -7,6 +7,7 @@ class Board(models.Model):
     start_time = models.DateTimeField(null=True, blank=True, verbose_name='투표 시작시각')  # 시작 시간
     end_time = models.DateTimeField(null=True, blank=True, verbose_name='투표 종료시각')    # 종료 시간
     activate = models.BooleanField(default=False, verbose_name='보드 활성화')             # 활성화 여부
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성 시각')  # 자동으로 생성 시간 입력
 
     def add_question(self, text, media=None):
         return Question.objects.create(board=self, text=text, media=media)
